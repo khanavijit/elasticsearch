@@ -1,0 +1,62 @@
+buildscript {
+	repositories {
+		mavenLocal()
+		maven { url "https://repo1.maven.org/maven2" }
+	}
+	dependencies {
+		classpath "org.openapitools:openapi-generator-gradle-plugin:5.1.1"
+	}
+
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.5.5'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id "org.openapi.generator" version "5.1.1"
+	id 'java'
+}
+
+group = 'com.avijit.projects'
+version = '1.0.0'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+	jcenter()
+
+}
+
+
+
+dependencies {
+	implementation "io.springfox:springfox-boot-starter:3.0.0"
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation "io.springfox:springfox-swagger-ui:3.0.0"
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'commons-io:commons-io:2.6'
+	implementation 'org.projectlombok:lombok:1.18.20'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	implementation 'com.google.code.gson:gson:2.8.8'
+}
+
+apply plugin: 'org.openapi.generator'
+
+test {
+	useJUnitPlatform()
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$rootDir/src/main/resources/static/openapi.json".toString()
+	outputDir = "$buildDir/generated".toString()
+	apiPackage = "com.avijit.projects.api"
+	invokerPackage = "com.avijit.projects.invoker"
+	modelPackage = "com.avijit.projects.model"
+	configOptions = [
+			dateLibrary: "java8"
+	]
+}

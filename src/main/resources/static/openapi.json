@@ -1,0 +1,40 @@
+{
+   "swagger":"2.0",
+   "info":{
+      "description":"An API that can search user support tickets",
+      "version":"1.0.0",
+      "title":"User Suport Tickets Search"
+   },
+   "host":"localhost:8080",
+   "basePath":"/v1",
+   "paths":{
+      "/search":{
+         "get":{
+            "summary":"seaerches the user support tickets",
+            "description":"",
+            "operationId":"search",
+            "parameters":[
+               {
+                  "name":"attribute",
+                  "in":"query",
+                  "description":"The name of the attribute that is been searched",
+                  "required":true,
+                  "type":"string"
+               },
+               {
+                  "name":"value",
+                  "in":"query",
+                  "description":"The value to find",
+                  "required":true,
+                  "type":"string"
+               }
+            ],
+            "responses":{
+               "200":{
+                  "description":"successful operation"
+               }
+            }
+         }
+      }
+   }
+}

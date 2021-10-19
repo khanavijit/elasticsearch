@@ -1,0 +1,25 @@
+spring:
+  application:
+    name:  "User Suport Tickets Search"
+    version: "1.0.0"
+
+  data:
+    elasticsearch:
+      client:
+        reactive:
+          endpoints: localhost:9200
+
+  elasticsearch:
+    rest:
+      uris: http://localhost:9200
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+  endpoint:
+    info:
+      enabled: true
