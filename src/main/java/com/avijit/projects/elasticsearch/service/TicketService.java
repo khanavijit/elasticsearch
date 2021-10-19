@@ -30,9 +30,11 @@ public class TicketService {
 
     public void bulkInsert()  {
 
+
+
         try {
            List<Ticket> tickets= indexLargeJsonFile.getTickets();
-            tickets.forEach(ticket -> ticketRepository.save(ticket));
+            tickets.forEach(ticket -> addTicket(ticket).block());
             log.info("Total Size " + tickets.size());
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,7 +42,9 @@ public class TicketService {
     }
 
 
-    public Mono<Ticket> addMovie(Ticket ticket) {
+    public Mono<Ticket> addTicket(Ticket ticket) {
+
+        log.info("Add - " + ticket);
         return ticketRepository.save(ticket);
     }
 }

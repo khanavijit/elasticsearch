@@ -64,7 +64,7 @@ public class SearchApi {
     @GetMapping(
             value = "/insert"
     )
-    ResponseEntity<String> search() {
+    ResponseEntity<String> insert() {
 
         // log.info(">>> search {} as {}", attribute,value);
 
@@ -74,8 +74,8 @@ public class SearchApi {
     }
 
     @PostMapping
-    public Mono<Ticket> addMovie(@RequestBody Ticket ticket) {
-        return ticketService.addMovie(ticket);
+    public Mono<Ticket> addTicket(@RequestBody Ticket ticket) {
+        return ticketService.addTicket(ticket);
     }
 
 }

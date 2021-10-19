@@ -103,10 +103,14 @@ public class IndexLargeJsonFile {
 */
 
      public List<Ticket> getTickets() throws IOException {
+         log.info(Paths.get(".").toAbsolutePath().normalize().toString());
 
-        Reader reader = Files.newBufferedReader(Paths.get("C:\\Codebase\\Maersk\\search-elasticcache\\codebase\\elasticsearch\\src\\main\\resources\\data\\databk.json"));
+        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data/data.json"));
 
         return new Gson().fromJson(reader, new TypeToken<List<Ticket>>() {}.getType());
+
+
+
 
     }
 
