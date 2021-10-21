@@ -19,6 +19,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import reactor.core.publisher.Flux;
 
 import java.io.IOException;
@@ -78,14 +79,29 @@ public class ReactiveTicketService implements TicketService {
         }
 
         //log.info("Reactive - Query " + searchQuery.getQuery());
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder() .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1))
+        .build();
 
 
-        Flux<SearchHit<Ticket>> allTickets = reactiveElasticsearchTemplate.search(searchQuery, Ticket.class);
+        try {
+            Flux<SearchHit<Ticket>> allTickets = reactiveElasticsearchTemplate.search(searchQuery, Ticket.class);
 
 
-        return StreamSupport.stream(allTickets.toIterable().spliterator(), false)
-                .map(ticketSearchHit ->  modelMapper.map(ticketSearchHit.getContent(), org.avijit.projects.generated.model.Ticket.class))
-                .collect(Collectors.toList());
+            /* StreamSupport.stream(allTickets.toIterable().spliterator(), true)
+                    .map(ticketSearchHit ->  modelMapper.map(ticketSearchHit.getContent(), org.avijit.projects.generated.model.Ticket.class))
+                    .collect(Collectors.toList());*/
+
+             allTickets.toStream().forEach(ticketSearchHit -> ticketSearchHit.getContent());
+
+
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
+
 
     }
+
+
 }

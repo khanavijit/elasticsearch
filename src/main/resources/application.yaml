@@ -3,7 +3,7 @@ spring:
     name:  "User Suport Tickets Search"
     version: "1.0.0"
   profiles:
-    active: reactive
+    active: elastic
   codec:
     max-in-memory-size: 50MB
 
