@@ -1,4 +1,4 @@
-buildscript {
+/*buildscript {
 	repositories {
 		mavenLocal()
 		maven { url "https://repo1.maven.org/maven2" }
@@ -7,7 +7,7 @@ buildscript {
 		classpath "org.openapitools:openapi-generator-gradle-plugin:5.1.1"
 	}
 
-}
+}*/
 
 plugins {
 	id 'org.springframework.boot' version '2.5.5'
@@ -18,9 +18,10 @@ plugins {
 
 group = 'com.avijit.projects'
 version = '1.0.0'
-sourceCompatibility = '11'
+sourceCompatibility = '16'
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 	jcenter()
 
@@ -41,9 +42,14 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 	implementation 'com.google.code.gson:gson:2.8.8'
+	implementation 'io.swagger.parser.v3:swagger-parser-v3:2.0.28'
+	implementation "org.openapitools:jackson-databind-nullable:0.2.1"
+	implementation 'org.modelmapper:modelmapper:2.1.1'
+	implementation 'com.github.javafaker:javafaker:1.0.2'
+
 }
 
-apply plugin: 'org.openapi.generator'
+//apply plugin: 'org.openapi.generator'
 
 test {
 	useJUnitPlatform()
@@ -53,10 +59,16 @@ openApiGenerate {
 	generatorName = "spring"
 	inputSpec = "$rootDir/src/main/resources/static/openapi.json".toString()
 	outputDir = "$buildDir/generated".toString()
-	apiPackage = "com.avijit.projects.api"
-	invokerPackage = "com.avijit.projects.invoker"
-	modelPackage = "com.avijit.projects.model"
+	apiPackage = "org.avijit.projects.generated.api"
+	invokerPackage = "org.avijit.projects.generated.invoker"
+	modelPackage = "org.avijit.projects.generated.model"
 	configOptions = [
-			dateLibrary: "java8"
+			dateLibrary: "java8",
+			interfaceOnly: "true"
 	]
 }
+
+compileJava.dependsOn tasks.openApiGenerate
+sourceSets.main.java.srcDir "$buildDir/generated/src/main/java"
+sourceSets.main.resources.srcDir "$buildDir/generated/src/main/resources"
+

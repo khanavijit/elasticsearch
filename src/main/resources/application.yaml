@@ -2,6 +2,10 @@ spring:
   application:
     name:  "User Suport Tickets Search"
     version: "1.0.0"
+  profiles:
+    active: reactive
+  codec:
+    max-in-memory-size: 50MB
 
   data:
     elasticsearch:
@@ -14,6 +18,7 @@ spring:
       uris: http://localhost:9200
 
 
+
 management:
   endpoints:
     web:
@@ -23,3 +28,5 @@ management:
   endpoint:
     info:
       enabled: true
+
+
