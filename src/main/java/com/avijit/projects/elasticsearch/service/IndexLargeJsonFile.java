@@ -8,13 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
@@ -24,15 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +56,7 @@ public class IndexLargeJsonFile {
     String[] status = {"Pending", "Open", "Close","hold"};
     String[] subject = {"Cargo Missing", "Booking Error", "Payment Sent Error"};
     Random random = new Random();
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -77,13 +73,11 @@ public class IndexLargeJsonFile {
                         new FileInputStream(jsonFilePath), StandardCharsets.UTF_8));
         Gson gson = new GsonBuilder().create();
 
-        jsonReader.beginArray(); //start of json array
+        jsonReader.beginArray();
         int numberOfRecords = 1;
         final var bulkRequest = new BulkRequest();
-        //List<XContentBuilder> array= new ArrayList<XContentBuilder>();
-        while (jsonReader.hasNext()){ //next json array element
+        while (jsonReader.hasNext()){
             Ticket ticket = gson.fromJson(jsonReader, Ticket.class);
-            //do something real
             try {
                 XContentBuilder xContentBuilder = jsonBuilder()
                         .startObject()
@@ -94,9 +88,6 @@ public class IndexLargeJsonFile {
                         .field(TICKET_PRIORITY, ticket.getPriority())
                         .field(TICKET_STATUS, ticket.getPriority())
                         .endObject();
-
-                //array.add(xContentBuilder);
-
 
                     IndexRequest indexRequest = new IndexRequest(Indices.TICKET_INDEX)
                             .source(xContentBuilder);
@@ -112,19 +103,16 @@ public class IndexLargeJsonFile {
                 }
             }catch (Exception e) {
                 e.printStackTrace();
-                //skip records if wrong date in input file
             }
             numberOfRecords++;
             count++;
         }
         jsonReader.endArray();
-        if(count!=0){ //add remaining documents to ES
+        if(count!=0){
 
             addDocumentToESCluser(bulkRequest,noOfBatch,count);
         }
-        //restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         log.info("Total Document Indexed : "+numberOfRecords);
-
         FILE_DETAILS.put(Constants.FILE_ID_KEY,UUID.randomUUID().toString());
         FILE_DETAILS.put(Constants.FILE_SIZE_KEY,jsonFilePath.length()+"");
         FILE_DETAILS.put(Constants.FILE_ELEMENTS_KEY,numberOfRecords+"");
@@ -134,19 +122,16 @@ public class IndexLargeJsonFile {
 
     public void addDocumentToESCluser(BulkRequest bulkRequest, int noOfBatch, int count) throws IOException {
         if(count==0){
-            //org.elasticsearch.action.ActionRequestValidationException: Validation Failed: 1: no requests added;
             return;
         }
         BulkResponse bulkResponse = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         if (bulkResponse.hasFailures()) {
             log.info("Bulk Indexing failed for Batch : "+noOfBatch);
-            // process failures by iterating through each bulk response item
             int numberOfDocFailed = 0;
             Iterator<BulkItemResponse> iterator = bulkResponse.iterator();
             while (iterator.hasNext()){
                 BulkItemResponse response = iterator.next();
                 if(response.isFailed()){
-                    //System.out.println("Failed Id : "+response.getId());
                     numberOfDocFailed++;
                 }
             }
@@ -158,44 +143,11 @@ public class IndexLargeJsonFile {
     }
 
 
-     public List<Ticket> getTickets() throws IOException {
-
-        Reader reader = Files.newBufferedReader(Paths.get("src/main/resources/data/data.json"));
-
-        return new Gson().fromJson(reader, new TypeToken<List<Ticket>>() {}.getType());
-
-
-    }
-
-    //method to be developed
-    public  void  bulkInsertFromFile() throws IOException {
-
-        BulkRequest bulkRequest = new BulkRequest();
-        List<Ticket> tickets = getTickets();
-
-        tickets.forEach(ticket -> {
-            IndexRequest indexRequest = new IndexRequest(Indices.TICKET_INDEX)
-                    .source(Ticket.getAsMap(ticket));
-            bulkRequest.add(indexRequest);
-        });
-        log.info("Total inputs  " + tickets.size());
-
-        try {
-            BulkResponse response= restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public void generateFakeJsonFile(int count){
         List<Ticket> tickets = getRandomTickets(count);
         FileWriter file=null;
         try {
 
-            // Constructs a FileWriter given a file name, using the platform's default charset
             file = new FileWriter("src/main/resources/data/data2.json");
             file.write(toJson(tickets));
 
@@ -209,7 +161,6 @@ public class IndexLargeJsonFile {
                 file.flush();
                 file.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

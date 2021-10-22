@@ -46,17 +46,7 @@ public class ReactiveTicketService implements TicketService {
 
 
 
-    public void bulkInsert()  {
 
-
-        try {
-            List<Ticket> tickets= indexLargeJsonFile.getTickets();
-            reactiveTicketRepository.saveAll(tickets).doOnNext(System.out::println).subscribe();
-            log.info("Total Size " + tickets.size());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 

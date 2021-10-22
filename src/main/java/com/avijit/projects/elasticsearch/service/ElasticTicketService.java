@@ -1,16 +1,12 @@
 package com.avijit.projects.elasticsearch.service;
 
 import com.avijit.projects.elasticsearch.document.Ticket;
-import com.avijit.projects.elasticsearch.helper.Constants;
 import com.avijit.projects.elasticsearch.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -33,36 +29,7 @@ public class ElasticTicketService implements TicketService{
     private final TicketRepository ticketRepository;
     private final IndexLargeJsonFile indexLargeJsonFile;
     private final ElasticsearchRestTemplate elasticsearchRestTemplate;
-    private final ModelMapper modelMapper;
 
-
-
-
-    public List<Ticket> getAllTickets() {
-
-        return (List<Ticket>) ticketRepository.findAll();
-    }
-
-
-
-    public void bulkInsert()  {
-
-
-        try {
-           List<Ticket> tickets= indexLargeJsonFile.getTickets();
-            ticketRepository.saveAll(tickets);
-            log.info("Total Size " + tickets.size());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public Ticket addTicket(Ticket ticket) {
-
-        log.info("Add - " + ticket);
-        return ticketRepository.save(ticket);
-    }
 
 
     public List<Ticket> getTickets(String attribute, String value, String fileId) {
@@ -94,4 +61,5 @@ public class ElasticTicketService implements TicketService{
             return null;
         }
     }
+
 }

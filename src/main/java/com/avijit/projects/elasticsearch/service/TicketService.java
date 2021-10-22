@@ -12,5 +12,5 @@ public interface TicketService {
 
     @Cacheable(key ="'getTicket-' + #attribute + #value + #fileId")
     public List<Ticket> getTickets(String attribute, String value, String fileId);
-    public void bulkInsert();
+
 }

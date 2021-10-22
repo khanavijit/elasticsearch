@@ -51,14 +51,6 @@
                "type": "int",
                "description": "ID"
             },
-            "priority": {
-               "type": "string",
-               "description": "Priority"
-            },
-            "subject": {
-               "type": "string",
-               "description": "Subject"
-            },
             "type": {
                "type": "string",
                "description": "Type of the Ticket"
@@ -70,6 +62,14 @@
             "status": {
                "type": "string",
                "description": "Status"
+            },
+            "priority": {
+               "type": "string",
+               "description": "Priority"
+            },
+            "subject": {
+               "type": "string",
+               "description": "Subject"
             }
          }
 
