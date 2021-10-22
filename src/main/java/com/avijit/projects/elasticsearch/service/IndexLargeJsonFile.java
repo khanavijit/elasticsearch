@@ -86,7 +86,7 @@ public class IndexLargeJsonFile {
                         .field(TICKET_SUBJECT, ticket.getSubject())
                         .field(TICKET_DESCRIPTION, ticket.getDescription())
                         .field(TICKET_PRIORITY, ticket.getPriority())
-                        .field(TICKET_STATUS, ticket.getPriority())
+                        .field(TICKET_STATUS, ticket.getStatus())
                         .endObject();
 
                     IndexRequest indexRequest = new IndexRequest(Indices.TICKET_INDEX)

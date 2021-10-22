@@ -1,0 +1,19 @@
+{
+  "properties":{
+    "_class":{
+      "type":"text",
+      "fields":{
+        "keyword":{
+          "type":"keyword",
+          "ignore_above":256
+        }
+      }
+    },
+    "subject":{
+      "type":"text"
+    },
+    "status":{
+      "type":"text"
+    }
+  }
+}
