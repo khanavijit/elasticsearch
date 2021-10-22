@@ -19,7 +19,6 @@ plugins {
 
 group = 'com.avijit.projects'
 version = '1.0.0'
-sourceCompatibility = '16'
 
 repositories {
 	mavenLocal()
@@ -69,7 +68,8 @@ openApiGenerate {
 	modelPackage = "org.avijit.projects.generated.model"
 	configOptions = [
 			dateLibrary: "java8",
-			interfaceOnly: "true"
+			interfaceOnly: "true",
+			serializableModel: "true"
 	]
 }
 

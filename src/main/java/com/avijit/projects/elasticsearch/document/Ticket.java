@@ -17,13 +17,13 @@ import java.util.Map;
 @Data
 @NoArgsConstructor
 @Document(indexName = Indices.TICKET_INDEX)
-public class Ticket extends org.avijit.projects.generated.model.Ticket implements Serializable {
+public class Ticket extends org.avijit.projects.generated.model.Ticket  {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Id
     private int id;
     public static Map<String, Object> getAsMap(final Ticket account) {
-        return OBJECT_MAPPER.convertValue(account, new TypeReference<Map<String, Object>>() {
+        return OBJECT_MAPPER.convertValue(account, new TypeReference<>() {
         });
     }
 }
