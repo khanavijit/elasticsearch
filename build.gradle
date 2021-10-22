@@ -14,6 +14,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "org.openapi.generator" version "5.1.1"
 	id 'java'
+	id 'scala'
 }
 
 group = 'com.avijit.projects'
@@ -40,6 +41,7 @@ dependencies {
 	implementation 'commons-io:commons-io:2.6'
 	implementation 'org.projectlombok:lombok:1.18.20'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.gatling.highcharts:gatling-charts-highcharts:3.6.1'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 	implementation 'com.google.code.gson:gson:2.8.8'
 	implementation 'io.swagger.parser.v3:swagger-parser-v3:2.0.28'
@@ -72,3 +74,22 @@ compileJava.dependsOn tasks.openApiGenerate
 sourceSets.main.java.srcDir "$buildDir/generated/src/main/java"
 sourceSets.main.resources.srcDir "$buildDir/generated/src/main/resources"
 
+task testLoad(type: JavaExec) {
+	description = 'Test load the Spring Boot web service with Gatling'
+	group = 'Load Test'
+	classpath = sourceSets.test.runtimeClasspath
+	jvmArgs = [
+			"-Dgatling.core.directory.binaries=${sourceSets.test.output.classesDirs.toString()}",
+			"-Dlogback.configurationFile=${logbackGatlingConfig()}"
+	]
+	main = 'io.gatling.app.Gatling'
+	args = [
+			'--simulation', 'webservice.gatling.simulation.WebServiceCallSimulation',
+			'--results-folder', "${buildDir}/gatling-results",
+			'--binaries-folder', sourceSets.test.output.classesDirs.toString() // ignored because of above bug
+	]
+}
+
+def logbackGatlingConfig() {
+	return sourceSets.test.resources.find { it.name == 'logback-gatling.xml'};
+}
