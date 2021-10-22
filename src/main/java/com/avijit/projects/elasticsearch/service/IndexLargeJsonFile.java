@@ -221,27 +221,9 @@ public class IndexLargeJsonFile {
         return object == null ? null : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     }
 
-    //for sample
-    public  void  fakeBulkInsert(int count) {
+
+    public  void fakeDataFileCreation(int count) {
         generateFakeJsonFile(count);
-
-        BulkRequest bulkRequest = new BulkRequest();
-        List<Ticket> tickets = getRandomTickets(count);
-
-        tickets.forEach(ticket -> {
-            IndexRequest indexRequest = new IndexRequest(Indices.TICKET_INDEX)
-                    .source(Ticket.getAsMap(ticket));
-            bulkRequest.add(indexRequest);
-        });
-        log.info("Total inputs  " + tickets.size());
-
-        try {
-            BulkResponse response= restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 
