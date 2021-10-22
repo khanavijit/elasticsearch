@@ -48,6 +48,9 @@ dependencies {
 	implementation "org.openapitools:jackson-databind-nullable:0.2.1"
 	implementation 'org.modelmapper:modelmapper:2.1.1'
 	implementation 'com.github.javafaker:javafaker:1.0.2'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	implementation 'com.hazelcast:hazelcast'
+	implementation 'com.hazelcast:hazelcast-spring'
 
 }
 

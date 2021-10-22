@@ -60,7 +60,7 @@ public class ReactiveTicketService implements TicketService {
 
 
 
-    public List<org.avijit.projects.generated.model.Ticket> getTickets(String attribute, String value) {
+    public List<Ticket> getTickets(String attribute, String value, String fileId) {
         NativeSearchQuery searchQuery ;
         if(attribute.equalsIgnoreCase("id")){
             searchQuery = new NativeSearchQueryBuilder()

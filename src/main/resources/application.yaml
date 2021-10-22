@@ -4,6 +4,8 @@ spring:
     version: "1.0.0"
   profiles:
     active: elastic
+  cache:
+    type: none
   codec:
     max-in-memory-size: 50MB
 
@@ -28,5 +30,8 @@ management:
   endpoint:
     info:
       enabled: true
+    health:
+      show-details: always
+
 
 

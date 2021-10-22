@@ -15,7 +15,7 @@ class WebServiceCallSimulation extends Simulation {
   val testTimeSecs = 20
   val noOfUsers = 10
   val minWaitMs = 50 milliseconds
-  val maxWaitMs = 1000 milliseconds
+  val maxWaitMs = 500 milliseconds
 
   val baseURL = "http://localhost:8080"
   val baseName = "/v1"

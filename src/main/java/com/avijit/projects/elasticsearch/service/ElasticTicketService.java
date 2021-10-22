@@ -1,6 +1,7 @@
 package com.avijit.projects.elasticsearch.service;
 
 import com.avijit.projects.elasticsearch.document.Ticket;
+import com.avijit.projects.elasticsearch.helper.Constants;
 import com.avijit.projects.elasticsearch.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,8 @@ import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -41,6 +44,7 @@ public class ElasticTicketService implements TicketService{
     }
 
 
+
     public void bulkInsert()  {
 
 
@@ -60,8 +64,10 @@ public class ElasticTicketService implements TicketService{
         return ticketRepository.save(ticket);
     }
 
-    public List<org.avijit.projects.generated.model.Ticket> getTickets(String attribute, String value) {
-        NativeSearchQuery searchQuery ;
+
+    public List<Ticket> getTickets(String attribute, String value, String fileId) {
+        log.info("invoking service not from cache - fileId " + fileId);
+        NativeSearchQuery searchQuery;
         if(attribute.equalsIgnoreCase("id")){
             searchQuery = new NativeSearchQueryBuilder()
                     .withQuery(QueryBuilders.matchQuery(attribute,value)

@@ -11,12 +11,13 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @Document(indexName = Indices.TICKET_INDEX)
-public class Ticket extends org.avijit.projects.generated.model.Ticket {
+public class Ticket extends org.avijit.projects.generated.model.Ticket implements Serializable {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Id

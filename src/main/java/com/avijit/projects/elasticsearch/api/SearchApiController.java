@@ -1,5 +1,7 @@
 package com.avijit.projects.elasticsearch.api;
 
+import com.avijit.projects.elasticsearch.helper.Constants;
+import com.avijit.projects.elasticsearch.service.IndexLargeJsonFile;
 import com.avijit.projects.elasticsearch.service.TicketService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -8,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.avijit.projects.generated.api.SearchApi;
+import org.avijit.projects.generated.model.Ticket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,7 +53,8 @@ public class SearchApiController implements SearchApi {
                                                  String value) {
 
         log.info(">>> search {} as {}", attribute,value);
-        return ResponseEntity.ok(ticketService.getTickets(attribute,value));
+        List<? extends org.avijit.projects.generated.model.Ticket> tickets= ticketService.getTickets(attribute,value, IndexLargeJsonFile.FILE_DETAILS.get(Constants.FILE_ID_KEY));
+        return ResponseEntity.ok((List<org.avijit.projects.generated.model.Ticket>)tickets);
 
     }
 

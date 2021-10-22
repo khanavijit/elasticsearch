@@ -2,6 +2,7 @@ package com.avijit.projects.elasticsearch.service;
 
 
 import com.avijit.projects.elasticsearch.document.Ticket;
+import com.avijit.projects.elasticsearch.helper.Constants;
 import com.avijit.projects.elasticsearch.helper.Indices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
@@ -21,6 +22,9 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.io.*;
@@ -35,6 +39,14 @@ import java.util.concurrent.ExecutionException;
 @Slf4j
 public class IndexLargeJsonFile {
 
+    public static final Map<String, String> FILE_DETAILS = new HashMap<>();
+
+
+    @PostConstruct
+    public void configureFileIdStartUp(){
+        FILE_DETAILS.put(Constants.FILE_ID_KEY,UUID.randomUUID().toString());
+        log.info("File id - " + FILE_DETAILS.get(Constants.FILE_ID_KEY) );
+    }
 
     public static final String TICKET_ID = "id";
         public static final String TICKET_TYPE = "type";
@@ -112,6 +124,10 @@ public class IndexLargeJsonFile {
         }
         //restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         log.info("Total Document Indexed : "+numberOfRecords);
+
+        FILE_DETAILS.put(Constants.FILE_ID_KEY,UUID.randomUUID().toString());
+        FILE_DETAILS.put(Constants.FILE_SIZE_KEY,jsonFilePath.length()+"");
+        FILE_DETAILS.put(Constants.FILE_ELEMENTS_KEY,numberOfRecords+"");
 
     }
 
