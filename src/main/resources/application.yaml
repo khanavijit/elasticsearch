@@ -3,17 +3,20 @@ spring:
     name:  "User Suport Tickets Search"
     version: "1.0.0"
   profiles:
-    active: elastic
+    active: reactive
   cache:
     type: hazelcast
-  codec:
-    max-in-memory-size: 50MB
 
   data:
     elasticsearch:
       client:
         reactive:
           endpoints: localhost:9200
+
+
+  main:
+    allow-bean-definition-overriding: true
+
 
   elasticsearch:
     rest:

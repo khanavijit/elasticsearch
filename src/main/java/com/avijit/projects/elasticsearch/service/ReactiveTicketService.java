@@ -1,6 +1,7 @@
 package com.avijit.projects.elasticsearch.service;
 
 import com.avijit.projects.elasticsearch.document.Ticket;
+import com.avijit.projects.elasticsearch.helper.Indices;
 import com.avijit.projects.elasticsearch.repository.ReactiveTicketRepository;
 import com.avijit.projects.elasticsearch.repository.TicketRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.core.ReactiveElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -21,6 +23,7 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilde
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,53 +39,23 @@ import java.util.stream.StreamSupport;
 public class ReactiveTicketService implements TicketService {
 
     private final ReactiveTicketRepository reactiveTicketRepository;
-    private final IndexLargeJsonFile indexLargeJsonFile;
     private final ReactiveElasticsearchTemplate reactiveElasticsearchTemplate;
-    private final ModelMapper modelMapper;
-
-
-
-
-
-
-
 
 
 
 
     public List<Ticket> getTickets(String attribute, String value, String fileId) {
-        NativeSearchQuery searchQuery ;
-        if(attribute.equalsIgnoreCase("id")){
-            searchQuery = new NativeSearchQueryBuilder()
-                    .withQuery(QueryBuilders.matchQuery(attribute,value)
-                            )
-                    .build();
-        }
-        else{
-            searchQuery = new NativeSearchQueryBuilder()
-                    .withQuery(QueryBuilders.matchQuery(attribute,value)
-                            .operator(Operator.AND)
-                            .lenient(true)
-                            .fuzziness(Fuzziness.ONE)
-                            .prefixLength(3))
-                    .build();
-        }
+        log.info("invoking service not from cache - fileId " + fileId);
+        List<Ticket> tickets = new ArrayList<>();
 
-        //log.info("Reactive - Query " + searchQuery.getQuery());
-        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder() .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1))
-        .build();
+        NativeSearchQuery searchQuery=Indices.getNativeQuery(attribute, value);
+        searchQuery.setPageable(PageRequest.of(49, 200));
 
 
         try {
             Flux<SearchHit<Ticket>> allTickets = reactiveElasticsearchTemplate.search(searchQuery, Ticket.class);
-
-
-            /* StreamSupport.stream(allTickets.toIterable().spliterator(), true)
-                    .map(ticketSearchHit ->  modelMapper.map(ticketSearchHit.getContent(), org.avijit.projects.generated.model.Ticket.class))
-                    .collect(Collectors.toList());*/
-
-             allTickets.toStream().forEach(ticketSearchHit -> ticketSearchHit.getContent());
-
+            allTickets.toStream().forEach(ticketSearchHit ->tickets.add( ticketSearchHit.getContent()));
+            return tickets;
 
         }
         catch(Exception e){
@@ -91,6 +64,24 @@ public class ReactiveTicketService implements TicketService {
         return null;
 
 
+    }
+
+
+
+    @Override
+    public List<Ticket> getTicketsInd(String attribute, String value, String s) {
+        List<Ticket> tickets= new ArrayList<>();
+        try {
+            Flux<Object> allTickets =  reactiveTicketRepository.findTicketByStatus(value, PageRequest.of(49, 200)).collectList().flatMapMany(Flux::just);
+
+
+            allTickets.toStream().forEach(ticketSearchHit ->tickets.addAll( ((ArrayList<Ticket>)ticketSearchHit)));
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return tickets;
     }
 
 

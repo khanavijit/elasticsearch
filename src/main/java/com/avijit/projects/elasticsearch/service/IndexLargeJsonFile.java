@@ -55,6 +55,9 @@ public class IndexLargeJsonFile {
     String[] priority = {"High", "medium", "Low"};
     String[] status = {"Pending", "Open", "Close","hold"};
     String[] subject = {"Cargo Missing", "Booking Error", "Payment Sent Error"};
+    String[] description = {"Nostrud ad sit velit cupidatat laboris ipsum nisi amet laboris ex exercitation amet et proident. Ipsum fugiat aute dolore tempor nostrud velit ipsum.",
+            "Aliquip excepteur fugiat ex minim ea aute eu labore. Sunt eiusmod esse eu non commodo est veniam consequat.",
+            "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit"};
     Random random = new Random();
 
     @Autowired
@@ -186,7 +189,7 @@ public class IndexLargeJsonFile {
 
             Ticket ticket= new Ticket();
             ticket.setId(i);
-            ticket.setDescription(faker.book().title());
+            ticket.setDescription(getRandom(description));
             ticket.setPriority(getRandom(priority));
             ticket.setStatus(getRandom(status));
             ticket.setSubject(getRandom(subject));

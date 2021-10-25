@@ -13,8 +13,8 @@ import java.util.Map;
 
 @Data
 @NoArgsConstructor
-@Document(indexName = Indices.TICKET_INDEX )
-@Mapping(mappingPath = "/elasticSearch.json")
+@Document(indexName = Indices.TICKET_INDEX)
+//@Mapping(mappingPath = "/elasticSearch.json")
 public class Ticket extends org.avijit.projects.generated.model.Ticket  {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
