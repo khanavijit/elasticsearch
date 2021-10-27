@@ -17,6 +17,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -92,12 +93,14 @@ public class IndexLargeJsonFile {
                         .field(TICKET_STATUS, ticket.getStatus())
                         .endObject();
 
+                String json = Strings.toString(xContentBuilder);
+                System.out.println(json);
                     IndexRequest indexRequest = new IndexRequest(Indices.TICKET_INDEX)
                             .source(xContentBuilder);
                     bulkRequest.add(indexRequest);
 
 
-                if (count==50_000) {
+                if (count==50000) {
 
 
                     addDocumentToESCluser(bulkRequest, noOfBatch, count);
@@ -140,6 +143,7 @@ public class IndexLargeJsonFile {
                 }
             }
             log.info("Out of "+count+" documents, "+numberOfDocFailed+" documents failed");
+
            log.info(bulkResponse.buildFailureMessage());
         }else{
             log.info("Bulk Indexing Completed for batch : "+noOfBatch);

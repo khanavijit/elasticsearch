@@ -5,12 +5,18 @@ import io.gatling.http.Predef._
 
 import scala.language.postfixOps
 import scala.concurrent.duration._
-
+import com.github.javafaker.Faker
 
 import java.util.Locale
 
 class WebServiceCallSimulation extends Simulation {
+  private val faker = new Faker(new Locale("en-IND"))
 
+
+
+  def getRandom() : String = {
+    return faker.educator.course;
+  }
   val rampUpTimeSecs = 5
   val testTimeSecs = 20
   val noOfUsers = 10
@@ -34,7 +40,7 @@ class WebServiceCallSimulation extends Simulation {
   val URI1 = "/v1/search?attribute=id&value=67"
   val URI2 = "/v1/search?attribute=subject&value=missing"
   val URI3 = "/v1/search?attribute=priority&value=high"
-  val URI4 = "/v1/search?attribute=description&value=Glory"
+  val URI4 = "/v1/search?attribute=description&value="
 
   val httpConf = http
     .baseUrl(baseURL)
@@ -74,8 +80,11 @@ class WebServiceCallSimulation extends Simulation {
       exec(
         http(requestName4)
           .get(URI4)
+          .formParam(key="value",value=getRandom())
           .check(status.is(200))
-      ).pause(minWaitMs, maxWaitMs)
+      )
+        .pause(minWaitMs, maxWaitMs)
+
     }
 
   setUp(
