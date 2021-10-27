@@ -78,7 +78,7 @@ public class IndexLargeJsonFile {
 
         jsonReader.beginArray();
         int numberOfRecords = 1;
-        final var bulkRequest = new BulkRequest();
+        var bulkRequest = new BulkRequest();
         while (jsonReader.hasNext()){
             Ticket ticket = gson.fromJson(jsonReader, Ticket.class);
             try {
@@ -101,6 +101,7 @@ public class IndexLargeJsonFile {
 
 
                     addDocumentToESCluser(bulkRequest, noOfBatch, count);
+                    bulkRequest = new BulkRequest();
                     noOfBatch++;
                     count = 0;
                 }
@@ -142,12 +143,14 @@ public class IndexLargeJsonFile {
            log.info(bulkResponse.buildFailureMessage());
         }else{
             log.info("Bulk Indexing Completed for batch : "+noOfBatch);
+
         }
     }
 
 
     public void generateFakeJsonFile(int count){
         List<Ticket> tickets = getRandomTickets(count);
+
         FileWriter file=null;
         try {
 
@@ -185,11 +188,12 @@ public class IndexLargeJsonFile {
     public  List<Ticket>  getRandomTickets(int count) {
         List<Ticket> tickets = new ArrayList<>();
 
-        for(int i=0;i < count;i++) {
 
+        for(int i=0;i < count;i++) {
+            String description = faker.educator().course() + " " + faker.educator().campus() +" "+faker.educator().secondarySchool()+ " " + faker.educator().campus() +" "+faker.educator().secondarySchool();
             Ticket ticket= new Ticket();
             ticket.setId(i);
-            ticket.setDescription(getRandom(description));
+            ticket.setDescription(description);
             ticket.setPriority(getRandom(priority));
             ticket.setStatus(getRandom(status));
             ticket.setSubject(getRandom(subject));

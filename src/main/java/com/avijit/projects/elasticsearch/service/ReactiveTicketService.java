@@ -49,7 +49,7 @@ public class ReactiveTicketService implements TicketService {
         List<Ticket> tickets = new ArrayList<>();
 
         NativeSearchQuery searchQuery=Indices.getNativeQuery(attribute, value);
-        searchQuery.setPageable(PageRequest.of(49, 200));
+        searchQuery.setPageable(PageRequest.of(0, 200));
 
 
         try {
