@@ -39,7 +39,7 @@ public class ElasticTicketService implements TicketService{
 
 
         NativeSearchQuery searchQuery=Indices.getNativeQuery(attribute, value);
-        searchQuery.setPageable(PageRequest.of(49, 200));
+        //searchQuery.setPageable(PageRequest.of(49, 200));
 
         SearchHits<Ticket> searchHits = elasticsearchRestTemplate.search(searchQuery, Ticket.class);
         if (searchHits.hasSearchHits()) {
